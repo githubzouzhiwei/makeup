@@ -1,0 +1,45 @@
+<div class="pageHeader">
+    <form id="pagerForm" onsubmit="return navTabSearch(this);" method="get">
+    	<input type="hidden" name="pageNo" th:value="${form.pageNo}" /> 
+		<input type="hidden" name="pageSize" th:value="${form.pageSize}" /> 
+		<input type="hidden" name="orderField" th:value="${form.orderField}" /> 
+		<input type="hidden" name="orderDirection" th:value="${form.orderDirection}" />
+    </form>
+</div>
+<div class="pageContent">
+    <div class="panelBar">
+        <ul class="toolBar">
+            <li><a class="add" th:href="@{/admin/role/create.do}" target="navTab" title="添加角色"><span>添加</span></a></li>
+            <li><a class="edit" th:href="@{/admin/role/update.do?id={id}}" target="navTab" title="修改角色"><span>修改</span></a></li>
+        </ul>
+    </div>
+    <table class="table" width="100%" layoutH="87" nowrapTD="false">
+        <thead>
+        <tr>
+            <th width="5" align="center"><input type="checkbox" class="checkboxCtrl" group="ids"/></th>
+            <th width="20" align="center" orderField="id" th:class="${form.orderField eq 'id'} ? ${form.orderDirection} : ''">ID</th>
+            <th width="20" align="center">角色名称</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr target="id" th:rel="${entity.id}" th:each="entity : ${page.content}">
+                <td><label><input type="checkbox" name="ids" th:value="${entity.id}"/></label></td>
+                <td th:text="${entity.id}"></td>
+                <td th:text="${entity.name}"></td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="panelBar">
+        <div class="pages">
+            <span>显示</span>
+            <select class="combox" name="numPerPage" th:value="${form.pageSize}" onchange="navTabPageBreak({numPerPage:this.value})">
+                <option value="20" th:selected="${form.pageSize == 25}">25</option>
+                <option value="50" th:selected="${form.pageSize == 50}">50</option>
+                <option value="100" th:selected="${form.pageSize == 100}">100</option>
+                <option value="200" th:selected="${form.pageSize == 200}">200</option>
+            </select>
+            <span th:text="|共${page.totalElements}条|"></span>
+        </div>
+        <div class="pagination" targetType="navTab" th:totalCount="${page.totalPages}" currentPage="${form.pageNo}" th:numPerPage="${form.pageSize}" pageNumShown="10"></div>
+    </div>
+</div>

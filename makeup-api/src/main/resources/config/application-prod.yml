@@ -1,0 +1,22 @@
+spring:
+  profiles: #引入其他profiles
+    include:
+      - db
+
+server:
+  port: 8080
+  
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    healthcheck:
+      enabled: true
+    serviceUrl:
+      defaultZone: http://admin:123456@eureka-server:8080/eureka/

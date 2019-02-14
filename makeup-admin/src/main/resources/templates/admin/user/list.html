@@ -1,0 +1,70 @@
+<div class="pageHeader">
+    <form id="pagerForm" onsubmit="return navTabSearch(this);" method="get">
+    	<input type="hidden" name="pageNo" th:value="${form.pageNo}" /> 
+		<input type="hidden" name="pageSize" th:value="${form.pageSize}" /> 
+		<input type="hidden" name="orderField" th:value="${form.orderField}" /> 
+		<input type="hidden" name="orderDirection" th:value="${form.orderDirection}" />
+		<div class="searchBar">
+            <table class="searchContent">
+                <tr>
+                    <td>
+                    	<label>用户名：</label>
+                    	<input type="text" name="username" th:value="${form.username}"/>
+                    </td>
+                </tr>
+            </table>
+            <div class="subBar">
+                <ul>
+                    <li>
+                        <div class="buttonActive">
+                            <div class="buttonContent">
+                                <button type="submit">查询</button>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="pageContent">
+    <div class="panelBar">
+        <ul class="toolBar">
+            <li><a class="add" th:href="@{/admin/user/create.do}" target="navTab" title="添加用户"><span>添加</span></a></li>
+            <li><a class="edit" th:href="@{/admin/user/update.do?id={id}}" target="navTab" title="修改用户"><span>修改</span></a></li>
+            <li class="line">line</li>
+            <li><a class="edit" th:href="@{/admin/user/resetPassword.do}" target="selectedTodo" title="重置密码"><span>重置密码</span></a></li>
+        </ul>
+    </div>
+    <table class="table" width="100%" layoutH="87" nowrapTD="false">
+        <thead>
+        <tr>
+            <th width="5" align="center"><input type="checkbox" class="checkboxCtrl" group="ids"/></th>
+            <th width="10" align="center" orderField="id" th:class="${form.orderField eq 'id'} ? ${form.orderDirection} : ''">ID</th>
+            <th width="200" align="center">用户名</th>
+            <th width="100" align="center">角色</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr target="id" th:rel="${entity.id}" th:each="entity : ${page.content}">
+                <td><label><input type="checkbox" name="ids" th:value="${entity.id}"/></label></td>
+                <td th:text="${entity.id}"></td>
+                <td th:text="${entity.username}"></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="panelBar">
+        <div class="pages">
+            <span>显示</span>
+            <select class="combox" name="numPerPage" th:value="${form.pageSize}" onchange="navTabPageBreak({numPerPage:this.value})">
+                <option value="20" th:selected="${form.pageSize == 25}">25</option>
+                <option value="50" th:selected="${form.pageSize == 50}">50</option>
+                <option value="100" th:selected="${form.pageSize == 100}">100</option>
+                <option value="200" th:selected="${form.pageSize == 200}">200</option>
+            </select>
+            <span th:text="|共${page.totalElements}条|"></span>
+        </div>
+        <div class="pagination" targetType="navTab" th:totalCount="${page.totalPages}" currentPage="${form.pageNo}" th:numPerPage="${form.pageSize}" pageNumShown="10"></div>
+    </div>
+</div>

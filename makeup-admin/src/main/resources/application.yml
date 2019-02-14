@@ -1,0 +1,20 @@
+server:
+  port: 8001
+  
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  
+spring:
+  thymeleaf:
+    cache: false
+    enabled: true
+  #引入其他profiles
+  profiles:
+    include:
+      - db
+
+api:
+  root: //api.zouzhiwei.com:1117

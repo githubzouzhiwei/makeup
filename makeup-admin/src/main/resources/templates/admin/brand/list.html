@@ -1,0 +1,104 @@
+<div class="pageHeader">
+    <form id="pagerForm" onsubmit="return navTabSearch(this);" method="get">
+    	<input type="hidden" name="pageNo" th:value="${form.pageNo}" /> 
+		<input type="hidden" name="pageSize" th:value="${form.pageSize}" /> 
+		<input type="hidden" name="orderField" th:value="${form.orderField}" /> 
+		<input type="hidden" name="orderDirection" th:value="${form.orderDirection}" />
+        <div class="searchBar">
+            <table class="searchContent">
+                <tr>
+                    <td>
+                    	ID：
+                    	<input type="text" name="id" th:value="${form.id}"/>
+                    </td>
+                    <td>
+                    	品牌名称：
+                    	<input type="text" name="name" th:value="${form.name}"/>
+                    </td>
+                    <td>
+						状态：
+						<select name="status" th:value="${form.status}">
+							<option value="-999">全部</option>
+							<option value="0" th:selected="${form.status == 0}">待审</option>
+							<option value="1" th:selected="${form.status == 1}">审核通过</option>
+							<option value="-1" th:selected="${form.status == -1}">审核不通过</option>
+							<option value="-2" th:selected="${form.status == -2}">删除</option>
+						</select>
+					</td>
+                </tr>
+            </table>
+            <div class="subBar">
+                <ul>
+                    <li>
+                        <div class="buttonActive">
+                            <div class="buttonContent">
+                                <button type="submit">查询</button>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="pageContent">
+    <div class="panelBar">
+        <ul class="toolBar">
+            <li><a class="add" th:href="@{/admin/brand/create.do}" target="navTab" title="添加品牌"><span>添加</span></a></li>
+            <li><a class="edit" th:href="@{/admin/brand/update.do?id={id}}" target="navTab" title="修改品牌"><span>修改</span></a></li>
+            <li class="line">line</li>
+            <li><a class="add" th:href="@{/admin/brand/status.do?status=1}" target="selectedTodo" title="确定要审核通过吗?"><span>审核通过</span></a></li>
+            <li><a class="delete" th:href="@{/admin/brand/status.do?status=-1}" target="selectedTodo" title="确定要审核不通过吗?"><span>审核不通过</span></a></li>
+            <li><a class="delete" th:href="@{/admin/brand/status.do?status=-2}" target="selectedTodo" title="确定要删除吗?"><span>删除</span></a></li>
+        </ul>
+    </div>
+    <table class="table" width="100%" layoutH="137" nowrapTD="false">
+        <thead>
+        <tr>
+            <th width="5" align="center"><input type="checkbox" class="checkboxCtrl" group="ids" /></th>
+            <th width="20" align="center" orderField="id" th:class="${form.orderField eq 'id'} ? ${form.orderDirection} : ''">ID</th>
+            <th width="20" align="center">品牌名称</th>
+            <th width="20" align="center">英文名称</th>
+            <th width="25" align="center">LOGO</th>
+            <th width="20" align="center">创建用户</th>
+            <th width="25" align="center">创建时间</th>
+            <th width="20" align="center">审核用户</th>
+            <th width="25" align="center">审核时间</th>
+            <th width="10" align="center">状态</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr target="id" th:rel="${item.id}" th:each="item : ${pager.list}">
+                <td><label><input type="checkbox" name="ids" th:value="${item.id}"/></label></td>
+                <td th:text="${item.id}"></td>
+                <td th:text="${item.name}"></td>
+                <td th:text="${item.enName}"></td>
+                <td style="line-height: 8px;">
+                    <img th:src="${item.logo}" width="28" height="20">
+                </td>
+                <td th:text="${item.createUsername}"></td>
+                <td th:text="${#dates.format(item.createAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td th:text="${item.censorUsername}"></td>
+                <td th:text="${#dates.format(item.censorAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td th:switch="${item.status}">
+					<font th:case="1" color="green" th:text="${item.statusName}"></font>
+					<font th:case="0" color="black" th:text="${item.statusName}"></font>
+					<font th:case="*" color="red" th:text="${item.statusName}"></font>
+				</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="panelBar">
+        <div class="pages">
+            <span>显示</span>
+            <select class="combox" name="numPerPage" th:value="${form.pageSize}" onchange="navTabPageBreak({numPerPage:this.value})">
+                <option value="20" th:selected="${form.pageSize == 25}">25</option>
+                <option value="50" th:selected="${form.pageSize == 50}">50</option>
+                <option value="100" th:selected="${form.pageSize == 100}">100</option>
+                <option value="200" th:selected="${form.pageSize == 200}">200</option>
+            </select>
+            <span th:text="|共${pager.total}条|"></span>
+        </div>
+        <div class="pagination" targetType="navTab" th:totalCount="${pager.pageCount}" currentPage="${form.pageNo}" th:numPerPage="${form.pageSize}" pageNumShown="10"></div>
+    </div>
+</div>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <script type="text/javascript">
+        // 页面在tab显示时刷新
+        if (document.getElementById("header")) {
+           window.location.reload();
+        }
+    </script>
+</head>
+<body>
+    <form th:action="@{/admin/login.do}" method="post">
+        用户名：<input type="text" name="username" />
+        密码：<input type="password" name="password" />
+        <input type="submit" value="登录" />
+    </form>
+</body>
+</html>

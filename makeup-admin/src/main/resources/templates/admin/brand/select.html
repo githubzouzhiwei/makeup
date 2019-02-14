@@ -1,0 +1,71 @@
+<div class="pageHeader">
+	<form onsubmit="return dialogSearch(this);" th:action="@{/admin/brand/select.do}" method="get">
+		<input type="hidden" name="pageNo" th:value="${form.pageNo}" /> 
+		<input type="hidden" name="pageSize" th:value="${form.pageSize}" /> 
+		<input type="hidden" name="orderField" th:value="${form.orderField}" />
+		<input type="hidden" name="orderDirection" th:value="${form.orderDirection}" />
+		<div class="searchBar">
+			<table class="searchContent">
+				<tr>
+                    <td>
+                    	<label>ID：</label>
+                    	<input type="text" name="id" th:value="${form.id}"/>
+                    </td>
+                    <td>
+                    	<label>品牌名称：</label>
+                    	<input type="text" name="name" th:value="${form.name}"/>
+                    </td>
+                </tr>
+			</table>
+			<div class="subBar">
+				<ul>
+					<li>
+						<div class="buttonActive">
+							<div class="buttonContent">
+								<button type="submit">查询</button>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</form>
+</div>
+<div class="pageContent">
+	<div class="panelBar">
+		<ul class="toolBar">
+			<li><a class="delete" href="javascript:$.bringBack({id:'', name:''});"><span>清空</span></a></li>
+		</ul>
+	</div>
+	<table class="table" targetType="dialog" style="width: 100%" layoutH="148">
+		<thead>
+			<tr>
+				<th align="center" orderField="id" th:class="${form.orderField eq 'id'} ? ${form.orderDirection} : ''">ID</th>
+            	<th align="center">品牌名称</th>
+            	<th align="center">英文名称</th>
+				<th align="center">选择</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="item : ${pager.list}">
+				<td th:text="${item.id}"></td>
+                <td th:text="${item.name}"></td>
+                <td th:text="${item.enName}"></td>
+				<td><a class="btnSelect" th:href="|javascript:$.bringBack({id:'${item.id}', name:'${item.name}'})|" title="查找带回">选择</a></td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="panelBar">
+        <div class="pages">
+            <span>显示</span>
+            <select class="combox" name="numPerPage" th:value="${form.pageSize}" onchange="navTabPageBreak({numPerPage:this.value})">
+                <option value="20" th:selected="${form.pageSize == 25}">25</option>
+                <option value="50" th:selected="${form.pageSize == 50}">50</option>
+                <option value="100" th:selected="${form.pageSize == 100}">100</option>
+                <option value="200" th:selected="${form.pageSize == 200}">200</option>
+            </select>
+            <span th:text="|共${pager.total}条|"></span>
+        </div>
+        <div class="pagination" targetType="navTab" th:totalCount="${pager.pageCount}" currentPage="${form.pageNo}" th:numPerPage="${form.pageSize}" pageNumShown="10"></div>
+    </div>
+</div>

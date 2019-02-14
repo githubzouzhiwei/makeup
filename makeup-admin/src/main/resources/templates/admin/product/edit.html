@@ -1,0 +1,98 @@
+<div class="pageContent">
+    <form id="productEditForm" method="post" th:action="@{/admin/product/{method}.do(method=${entity?.id <= 0 ? 'create' : 'update'})}" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone);">
+        <input type="hidden" name="id" th:value="${entity?.id}">
+        <div class="pageFormContent" layoutH="56">
+        	<div class="unit">
+                <label align="right"><font style="color:red">*</font>品牌：</label>
+                <input type="hidden" name="brand.id" th:value="${brand?.id}"/>
+                <input type="text" name="brand.name" th:value="${brand?.name}" class="required" readonly="readonly"/>
+                <a class="btnLook" th:href="@{/admin/brand/select.do}" lookupGroup="brand">选择品牌</a>
+            </div>
+            <div class="divider"></div>
+            <div class="unit">
+                <label align="right"><font style="color:red">*</font>产品名称：</label>
+                <input type="text" name="name" th:value="${entity?.name}" class="required"/>
+            </div>
+            <div class="divider"></div>
+			<div class="unit">
+				<label align="right"><font style="color: red">*</font>产品图片：</label>
+				<div style="display:inline-block;position:relative;">
+					<a class="button" th:href="@{/admin/common/uploadPic.do?callback=productImageCallback}" rel="uploadLogo" target="dialog" mask="true" width="300" height="170"><span>上传图片</span></a>
+					<a class="button" onclick="switchSort(this)" style="margin-left: 4px;"><span>开启排序</span></a>
+					<br/><br/><br/>
+					<ul id="imageList">
+						<li style="display: inline-block;" th:each="item: ${prodcutImageList}">
+							<input type="hidden" name="images" th:value="${item.url}">
+							<img id="imageImg" th:src="${item.url}" width="100" height="100" style="float: left;">
+							<a class="btnDel" onclick="deleteImageItem(this)">删除</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+        </div>
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit" onclick="return checkForm();">保存</button>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+                            <button type="button" class="close">取消</button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+	function checkForm() {
+		var brandId = $("input[name='brand.id']").val();
+		if (brandId == null || brandId <= 0) {
+			alertMsg.error("请选择品牌");
+			return false;
+		}
+		var imageList = $("#imageList").children();
+		if (imageList == null || imageList.length == 0) {
+			alertMsg.error("产品图片未上传");
+			return false;
+		}
+		return true;
+	}
+	// 上传图片回调方法
+	function productImageCallback(data) {
+		var imageItem = $('<li style="display: inline-block;"><input type="hidden" name="images" value="' + data.url + '"><img id="imageImg" src="' + data.url + '" width="100" height="100" style="float: left;"><a class="btnDel" onclick="deleteImageItem(this)">删除</a></li>')
+		$("#productEditForm #imageList").append(imageItem);
+	}
+	
+	function deleteImageItem(obj) {
+		alertMsg.confirm("是否确定删除？", {okCall: function() {
+			$(obj).parent().remove();
+		}});
+	}
+	
+	var sortable = null;
+	function switchSort(obj) {
+		if (sortable != null) {
+			// 关闭排序
+			sortable.destroy();
+			sortable = null;
+			$(obj).html("<span>开启排序</span>");
+			$("#imageList .btnDel").show();
+		} else {
+			// 开启排序
+			var imageList = $("#imageList").children();
+			if (imageList == null || imageList.length <= 1) {
+				return;
+			}
+			sortable = Sortable.create(document.getElementById("imageList"));
+			$(obj).html("<span>关闭排序</span>");
+			$("#imageList .btnDel").hide();
+		}
+	}
+</script>

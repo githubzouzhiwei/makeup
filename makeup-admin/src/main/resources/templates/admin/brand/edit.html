@@ -1,0 +1,57 @@
+<div class="pageContent">
+    <form id="brandEditForm" method="post" th:action="@{/admin/brand/{method}.do(method=${entity?.id <= 0 ? 'create' : 'update'})}" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone);">
+        <input type="hidden" name="id" th:value="${entity?.id}">
+        <div class="pageFormContent" layoutH="56">
+            <div class="unit">
+                <label align="right"><font style="color:red">*</font>品牌名称：</label>
+                <input type="text" name="name" th:value="${entity?.name}" class="required"/>
+            </div>
+            <div class="divider"></div>
+            <div class="unit">
+                <label align="right"><font style="color:red">*</font>英文名称：</label>
+                <input type="text" name="enName" th:value="${entity?.enName}" class="required"/>
+            </div>
+            <div class="divider"></div>
+			<div class="unit">
+				<label align="right"><font style="color: red">*</font>LOGO：</label>
+		        <input type="hidden" name="logo" th:value="${entity?.logo}">
+				<div style="display:inline-block;position:relative;">
+					<a class="button" th:href="@{/admin/common/uploadPic.do?callback=brandImageCallback}" rel="uploadLogo" target="dialog" mask="true" width="300" height="170"><span>上传图片</span></a>
+					<br/>
+					<div id="image">
+						<th:block th:if="${entity?.logo != null && entity?.logo != ''}">
+							<img width="200" height="150" th:src="${entity?.logo}" style="margin-top:4px;">
+						</th:block>
+					</div>
+				</div>
+			</div>
+        </div>
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit">保存</button>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+                            <button type="button" class="close">取消</button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+	// 上传图片回调方法
+	function brandImageCallback(data) {
+		var image = $('<img width="200" height="150" style="margin-top:4px;">');
+		image.attr("src", data.url);
+		$("#brandEditForm #image").html(image);
+		$("#brandEditForm input[name='logo']").val(data.url);
+	}
+</script>
